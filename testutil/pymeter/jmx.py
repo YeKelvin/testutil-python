@@ -4,13 +4,14 @@
 # @Author  : KelvinYe
 import os
 import xml.etree.ElementTree as ET
-
 # try:
 #     import xml.etree.cElementTree as ET
 # except ImportError:
 #     import xml.etree.ElementTree as ET
+from datetime import datetime
+
 from common import config
-from testutil.common.time_util import current_time_as_str
+from file_io.content_util import replace
 from testutil.file_io import content_util
 from testutil.file_io.file_util import make_zip
 from testutil.file_io.path_util import get_script_list
@@ -44,8 +45,8 @@ def backup(workspace: str):
     backupdir = os.path.join(workspace, 'backup')
     regression_parent = os.path.join(workspace, 'regression-testing')
     version_parent = os.path.join(workspace, 'version-testing')
-    regression_zipname = 'regression %s.zip' % current_time_as_str()
-    version_zipname = 'version %s.zip' % current_time_as_str()
+    regression_zipname = 'regression %s.zip' % datetime.now().strftime('%Y%m%d-%H%M%S')
+    version_zipname = 'version %s.zip' % datetime.now().strftime('%Y%m%d-%H%M%S')
     make_zip(regression_parent, backupdir, regression_zipname)
     make_zip(version_parent, backupdir, version_zipname)
 
@@ -55,6 +56,8 @@ if __name__ == '__main__':
     backup(workspace)  # 先备份，打包为zip文件
     scrips = get_script_list(workspace)  # 获取脚本列表
     for jmx in scrips:
+        replace(jmx, 'ExtentHtmlReportGui', 'LocalHtmlReportGui')
+        replace(jmx, 'Extent Html Report', 'Local HTML Report')
         # 转换文档格式为UNIX
         content_util.doc2unix(jmx)
         print(f'{jmx} - 执行成功')

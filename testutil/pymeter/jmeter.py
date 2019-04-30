@@ -53,13 +53,13 @@ def run(env: str, path: str) -> None:
     workspace = config.get('jmeter', 'workspace')
     reportname = 'regression-testing-report.html'
     is_append = 'true'
-    regression_parent = os.path.join(workspace, 'RegressionTesting')
+    regression_parent = os.path.join(workspace, 'regression-testing')
     currenttime = current_time_as_dirname()
     abspath = None
     jmx_list = []
 
     if path == "":
-        # 如 path 为空，则执行 workspace/RegressionTesting回归目录 下所有jmx脚本
+        # 如 path 为空，则执行 workspace/regression-testing回归目录 下所有jmx脚本
         jmx_list = get_script_list(regression_parent)
     else:
         # 如 path 非空，则先判断 path 是目录还是脚本

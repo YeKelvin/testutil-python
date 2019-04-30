@@ -96,7 +96,7 @@ def path_join(parent, child):
 
 def path_transform_reportname(path: str):
     """
-    根据路径平装报告名
+    根据路径转换为测试报告名称
     """
     # 因path值为人工输入，故不使用os.path.sep
     if path[0] == '/' or path[0] == '\\':
