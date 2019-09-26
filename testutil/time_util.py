@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time    : 2018/4/14 09:13
-# @Author  : KelvinYe
+# @Author  : Kelvin.Ye
 from _datetime import datetime
 from time import time
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time    : 2017/12/12 16:24
-# @Author  : KelvinYe
+# @Author  : Kelvin.Ye
 
 import socket
 import telnetlib

@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time    : 2018/4/10 17:42
-# @Author  : KelvinYe
+# @Author  : Kelvin.Ye
+
 import os
-import xml.etree.ElementTree as ET
-# try:
-#     import xml.etree.cElementTree as ET
-# except ImportError:
-#     import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as eltree
 from datetime import datetime
 
-from common import config
-from file_io.content_util import replace
-from testutil.file_io import content_util
-from testutil.file_io.file_util import make_zip
-from testutil.file_io.path_util import get_script_list
+from testutil import config, content_util
+from testutil.content_util import replace
+from testutil.file_util import make_zip
+from testutil.path_util import get_script_list
 
 
 class JMX:
     def __init__(self, jmx_path):
         self.jmx_path = jmx_path
-        self.etree = ET.parse(os.path.normpath(jmx_path))
+        self.etree = eltree.parse(os.path.normpath(jmx_path))
         self.root = self.etree.getroot()
         self.test_plan = self.root[0][0]
         self.main_tree = self.root[0][1]

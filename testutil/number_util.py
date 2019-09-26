@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # @Time    : 2018/11/7 17:10
-# @Author  : KelvinYe
+# @Author  : Kelvin.Ye
 
 
 def decimal_to_percentage(decimal: float) -> str:

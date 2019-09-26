@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time    : 2017/12/7 11:49
-# @Author  : KelvinYe
+# @Author  : Kelvin.Ye
 import logging
 
 # LogLevel: CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET

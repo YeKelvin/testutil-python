@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time    : 2017/6/1 10:09
-# @Author  : KelvinYe
+# @Author  : Kelvin.Ye
+
 import os
 import sys
 import traceback
-from os.path import isdir
+
+# 添加项目路径到path
+sys.path.append(os.path.dirname(sys.path[0]))
 from subprocess import Popen, PIPE, STDOUT
 
-from testutil.common import config
-from testutil.common.number_util import decimal_to_percentage
-from testutil.common.time_util import current_time_as_s, seconds_convert_to_hms, current_time_as_dirname
-from testutil.file_io.path_util import (path_transform_reportname, get_script_list,
-                                        get_abspath_by_scriptname, isjmx,
-                                        get_abspath_by_relative_path, get_file_list_by_env)
+from testutil import config
+from testutil.number_util import decimal_to_percentage
+from testutil.time_util import current_time_as_s, seconds_convert_to_hms, current_time_as_dirname
+from testutil.path_util import (path_transform_reportname, get_script_list,
+                                get_abspath_by_scriptname, isjmx,
+                                get_abspath_by_relative_path, get_file_list_by_env)
 
 
 class Jmeter:
     """Jmeter类
     """
 
-    def __init__(self, jmeter_bin: str, env: str, reportname: str, is_append: bool):
+    def __init__(self, jmeter_bin: str, env: str, reportname: str, is_append: str):
         self.jmeter_path = os.path.join(jmeter_bin, 'jmeter')
-        self.options = rf' -JconfigName="{env}" -JreportName="{reportname}" -JisAppend="{is_append}" -n -t '
+        self.options = (rf' -JconfigName="{env}" -JreportName="{reportname}" -JisAppend="{is_append}" '
+                        rf'-JprintSampleResultToConsole="false" -n -t ')
         self.__command = self.jmeter_path + self.options
 
     def execute(self, jmx_abspath: str) -> None:
@@ -64,7 +68,7 @@ def run(env: str, path: str) -> None:
     else:
         # 如 path 非空，则先判断 path 是目录还是脚本
         abspath = get_abspath_by_relative_path(workspace, path)
-        if isdir(abspath):
+        if os.path.isdir(abspath):
             reportname = path_transform_reportname(path)
             jmx_list = get_script_list(abspath)
         elif isjmx(abspath):
@@ -106,7 +110,7 @@ def run(env: str, path: str) -> None:
         completed_number += 1
         print(f'当前脚本耗时:[{seconds_convert_to_hms(current_elapsed_time)}]')
         print(f'已完成脚本数:[{completed_number}]，剩余脚本数:[{script_number - completed_number}]，'
-              f'当前总进度:[{decimal_to_percentage(completed_number/script_number)}]\n')
+              f'当前总进度:[{decimal_to_percentage(completed_number / script_number)}]\n')
 
     # 统计总耗时
     total_elapsed_time = current_time_as_s() - starttime

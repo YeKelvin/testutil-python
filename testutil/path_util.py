@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # @Time    : 2018/4/11 17:45
-# @Author  : KelvinYe
+# @Author  : Kelvin.Ye
 #
 # 路径处理
 #

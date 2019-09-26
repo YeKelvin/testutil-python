@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2017/6/2 15:10
-# @Author  : KelvinYe
-#
-# 获取配置属性值
-#
+# @Author  : Kelvin.Ye
+
 import os
 import configparser
 
-CONFIG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                           os.pardir, os.pardir, 'resources', 'config.ini'))
+CONFIG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'resources', 'config.ini'))
 
 
 def get(section, key, filepath=CONFIG_PATH):
@@ -33,13 +30,13 @@ def get(section, key, filepath=CONFIG_PATH):
 def get_project_path():
     """返回项目根目录路径。
     """
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir))
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 
 def get_resources_path():
     """返回项目资源目录路径。
     """
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, 'resources'))
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'resources'))
 
 
 if __name__ == '__main__':
