@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2017/6/1 10:09
 # @Author  : Kelvin.Ye
+
 import locale
 import os
 import sys
@@ -22,6 +23,7 @@ class Jmeter:
     """
 
     def __init__(self, jmeter_bin: str, env: str, reportname: str, is_append: str):
+        locale.setlocale(locale.LC_ALL, 'zh_CN.UTF-8')
         self.jmeter_path = os.path.join(jmeter_bin, 'jmeter')
         self.options = (rf' -JconfigName="{env}" -JreportName="{reportname}" -JisAppend="{is_append}" '
                         rf'-JprintSampleResultToConsole="false" -n -t ')
@@ -38,9 +40,6 @@ class Jmeter:
         """
         command = self.__command + f'"{jmx_abspath}"'
         print(f'Commond:[{command}]\n')
-        locale.setlocale(locale.LC_ALL, 'zh_CN.UTF-8')
-        print(sys.getdefaultencoding())
-        print(locale.getdefaultlocale())
         popen = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True, universal_newlines=True, encoding='utf-8')
         while popen.poll() is None:  # 检查子进程是否结束
             line = popen.stdout.readline()
