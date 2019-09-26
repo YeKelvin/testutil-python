@@ -3,7 +3,6 @@
 # @Time    : 2017/6/1 10:09
 # @Author  : Kelvin.Ye
 
-import locale
 import os
 import sys
 import traceback
@@ -23,11 +22,10 @@ class Jmeter:
     """
 
     def __init__(self, jmeter_bin: str, env: str, reportname: str, is_append: str):
-        locale.setlocale(locale.LC_ALL, 'zh_CN.UTF-8')
         self.jmeter_path = os.path.join(jmeter_bin, 'jmeter')
         self.options = (rf' -JconfigName="{env}" -JreportName="{reportname}" -JisAppend="{is_append}" '
                         rf'-JprintSampleResultToConsole="false" -n -t ')
-        self.__command = self.jmeter_path + self.options
+        self.__command = f'"{self.jmeter_path}"' + self.options
 
     def execute(self, jmx_abspath: str) -> None:
         """根据路径执行jmeter脚本
