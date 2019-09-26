@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2017/6/1 10:09
 # @Author  : Kelvin.Ye
-
+import locale
 import os
 import sys
 import traceback
@@ -14,9 +14,7 @@ from subprocess import Popen, PIPE, STDOUT
 from testutil import config
 from testutil.number_util import decimal_to_percentage
 from testutil.time_util import current_time_as_s, seconds_convert_to_hms, current_time_as_dirname
-from testutil.path_util import (path_transform_reportname, get_script_list,
-                                get_abspath_by_scriptname, isjmx,
-                                get_abspath_by_relative_path, get_file_list_by_env)
+from testutil.path_util import get_script_list, isjmx, get_file_list_by_env
 
 
 class Jmeter:
@@ -38,9 +36,12 @@ class Jmeter:
         Returns: None
 
         """
-        command = self.__command + jmx_abspath
+        command = self.__command + f'"{jmx_abspath}"'
         print(f'Commond:[{command}]\n')
-        popen = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True, universal_newlines=True)
+        locale.setlocale(locale.LC_ALL, 'zh_CN.UTF-8')
+        print(sys.getdefaultencoding())
+        print(locale.getdefaultlocale())
+        popen = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True, universal_newlines=True, encoding='utf-8')
         while popen.poll() is None:  # 检查子进程是否结束
             line = popen.stdout.readline()
             line = line.strip()
@@ -54,33 +55,26 @@ class Jmeter:
 
 def run(env: str, path: str) -> None:
     jmeterbin = config.get('jmeter', 'bin')
-    workspace = config.get('jmeter', 'workspace')
-    reportname = 'regression-testing-report.html'
     is_append = 'true'
-    regression_parent = os.path.join(workspace, 'regression-testing')
+    reportname = 'jmeter-report'
     currenttime = current_time_as_dirname()
-    abspath = None
     jmx_list = []
 
-    if path == "":
-        # 如 path 为空，则执行 workspace/regression-testing回归目录 下所有jmx脚本
-        jmx_list = get_script_list(regression_parent)
+    if not path:
+        raise ValueError('路径不能为空')
+
+    # 判断 path 是目录还是脚本
+    if os.path.isdir(path):
+        jmx_list = get_script_list(path)
+    elif isjmx(path):
+        jmx_list.append(path)
     else:
-        # 如 path 非空，则先判断 path 是目录还是脚本
-        abspath = get_abspath_by_relative_path(workspace, path)
-        if os.path.isdir(abspath):
-            reportname = path_transform_reportname(path)
-            jmx_list = get_script_list(abspath)
-        elif isjmx(abspath):
-            reportname = os.path.split(abspath)[1][:-4]
-            jmx_list.append(get_abspath_by_scriptname(workspace, path))
-        else:
-            print(f'" {workspace} "下，不存在 {abspath} 此目录或脚本')
-            sys.exit()
+        print(f'"目录或脚本不存在 {path}')
+        sys.exit()
 
     # 待执行脚本列表非空校验
-    if len(jmx_list) == 0 or jmx_list[0] == '':
-        print(f'" {workspace} "下，目录或脚本不存在')
+    if not jmx_list:
+        print(f'"目录下不存在脚本 {path}')
         sys.exit()
 
     # 排除脚本名含 skip 的脚本
@@ -88,14 +82,12 @@ def run(env: str, path: str) -> None:
 
     # 统计总脚本数
     script_number = len(jmx_list)
-    # reportname = rf'[{reportname}]{currenttime}.html'
     reportname = rf'[{currenttime}]{reportname}.html'
     os.chdir(jmeterbin)  # 设置当前工作路径为jmeter\bin
     jmeter = Jmeter(jmeterbin, env, reportname, is_append)
 
     print(f'JmeterBin:[{jmeterbin}]')
-    print(f'Workspace:[{workspace}]')
-    print(f'脚本读取路径:[{abspath}]')
+    print(f'脚本读取路径:[{path}]')
     print(f'总脚本数:[{script_number}]\n')
 
     # 用于统计完成脚本数
@@ -148,7 +140,7 @@ if __name__ == '__main__':
         if env in env_list:
             break
         print('不存在此测试环境配置，请重新输入。')
-    path = input('请输入需执行的目录或脚本（相对路径，脚本需后缀）：')
+    path = input('请输入需要执行的目录或脚本（绝对对路径）：')
     try:
         run(env, path)
     except Exception as e:
